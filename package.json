@@ -1,0 +1,33 @@
+{
+  "name": "hubot-hostinger",
+  "description": "A Hubot script for Hostinger",
+  "version": "0.0.1",
+  "main": "index.coffee",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hostinger/hubot-hostinger.git"
+  },
+  "keywords": [
+    "hubot",
+    "hubot-scripts"
+  ],
+  "dependencies": {
+    "request": "^2.67.0"
+  },
+  "devDependencies": {
+    "coffee-script": "1.6.3",
+    "chai": "*",
+    "hubot-mock-adapter": "~1.0.0",
+    "mocha": "*",
+    "sinon-chai": "*",
+    "sinon": "*"
+  },
+  "scripts": {
+    "test": "script/test"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hostinger/hubot-hostinger/issues"
+  },
+  "homepage": "https://github.com/hostinger/hubot-hostinger"
+}
