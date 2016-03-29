@@ -10,7 +10,8 @@
 # Commands:
 #   hubot hostinger ping - test API is responding
 #   hubot hostinger backup list <username> - List backups for username.
-#   hubot hostinger backup move <username> - move backup to /home/<username>/public_html
+#   hubot hostinger backup create <username> - create backup for <username>
+#   hubot hostinger backup move <filename> - move backup to /home/<username>/public_html/<filename>
 #   hubot hostinger hosted <domain> - check if domain is already hosted
 #   hubot hostinger show null routed ips - display currently null routed ips
 #
@@ -58,16 +59,23 @@ module.exports = (robot) ->
         else
           msg.send "no backups for #{username}"
 
-  robot.respond /hostinger backup move ([a-z0-9]+)/i, (msg) ->
+  robot.respond /hostinger backup move ([a-z0-9_\.]+)/i, (msg) ->
+    filename = msg.match[1]
+    hostinger_request 'POST', 'admin/backup/account/backup/move',
+      {backup: filename},
+      (result) ->
+        msg.send result
+
+  robot.respond /hostinger backup create ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
-    hostinger_request 'POST', '/admin/backups/move',
+    hostinger_request 'POST', 'admin/backup/account/backup/crete',
       {username: username},
       (result) ->
         msg.send result
 
   robot.respond /hostinger hosted ([\S]+)/i, (msg) ->
     domain = msg.match[1]
-    hostinger_request 'POST', '/admin/reseller/client/order/is_domain_hosted',
+    hostinger_request 'POST', 'admin/reseller/client/order/is_domain_hosted',
       {domain: domain},
       (result) ->
         if result.hosted
@@ -76,7 +84,7 @@ module.exports = (robot) ->
           msg.send "Domain #{result.domain} is not hosted"
 
   robot.respond /hostinger show null routed ips/i, (msg) ->
-    hostinger_request 'POST', '/admin/health/null_routed_ips',
+    hostinger_request 'POST', 'admin/health/null_routed_ips',
       null,
       (result) ->
         msg.send "Ips: #{result}"
