@@ -68,7 +68,7 @@ module.exports = (robot) ->
 
   robot.respond /hostinger backup create ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
-    hostinger_request 'POST', 'admin/backup/account/backup/crete',
+    hostinger_request 'POST', 'admin/backup/account/backup/create',
       {username: username},
       (result) ->
         msg.send result
