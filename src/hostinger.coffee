@@ -14,6 +14,7 @@
 #   hubot hostinger backup move <filename> - move backup to /home/<username>/public_html/<filename>
 #   hubot hostinger hosted <domain> - check if domain is already hosted
 #   hubot hostinger show null routed ips - display currently null routed ips
+#   hubot hostinger check <server_id> <ip> - check if ip <ip> blocked on <server_id>
 #
 # Author:
 #   fordnox
@@ -88,3 +89,17 @@ module.exports = (robot) ->
       null,
       (result) ->
         msg.send "Ips: #{result}"
+
+  robot.respond /hostinger check ([0-9]+\. )/i, (msg) ->
+    server_id = msg.match[1].split(',')[0]
+    ip = msg.match[1].split(',')[1]
+    hostinger_request 'POST', 'admin/server/ip/check',
+      {server_id: server_id},
+      {ip: ip},
+      (result) ->
+        if result.length
+          msg.send "#{result}"
+        else
+          msg.send "Nothing"
+
+
