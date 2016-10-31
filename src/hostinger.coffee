@@ -90,12 +90,11 @@ module.exports = (robot) ->
       (result) ->
         msg.send "Ips: #{result}"
 
-  robot.respond /hostinger check ([0-9]+\. )/i, (msg) ->
-    server_id = msg.match[1].split(',')[0]
-    ip = msg.match[1].split(',')[1]
+  robot.respond /hostinger check ([0-9\. ]+)/i, (msg) ->
+    server_id = msg.match[1].split(" ")[0]
+    ip = msg.match[1].split(" ")[1]
     hostinger_request 'POST', 'admin/server/ip/check',
-      {server_id: server_id},
-      {ip: ip},
+      {server_id: server_id,ip: ip},
       (result) ->
         if result.length
           msg.send "#{result}"
