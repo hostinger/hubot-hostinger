@@ -15,6 +15,7 @@
 #   hubot hostinger hosted <domain> - check if domain is already hosted
 #   hubot hostinger show null routed ips - display currently null routed ips
 #   hubot hostinger check <server_id> <ip> - check if ip <ip> blocked on <server_id>
+#   hubot hostinger unban <server_id> <ip> - unban ip <ip> blocked on <server_id>
 #
 # Author:
 #   fordnox
@@ -101,4 +102,13 @@ module.exports = (robot) ->
         else
           msg.send "Nothing"
 
-
+  robot.respond /hostinger unban ([0-9\. ]+)/i, (msg) ->
+    server_id = msg.match[1].split(" ")[0]
+    ip = msg.match[1].split(" ")[1]
+    hostinger_request 'POST', 'admin/server/ip/unban',
+      {server_id: server_id,ip: ip},
+      (result) ->
+        if result.length
+          msg.send "#{result}"
+        else
+          msg.send "Nothing"
