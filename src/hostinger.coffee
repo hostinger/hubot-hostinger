@@ -57,7 +57,7 @@ module.exports = (robot) ->
       (result) ->
         if result.length
           for backup in result
-            msg.send "#{backup.type} backup #{backup.name} (#{backup.size}) on server #{backup.srv_id}: #{backup.date}"
+            msg.send "#{backup.type} backup #{backup.name} (#{backup.size}) on server #{backup.srv_id}: #{backup.date} - #{backup.url}"
         else
           msg.send "no backups for #{username}"
 
