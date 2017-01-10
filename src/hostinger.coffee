@@ -52,12 +52,14 @@ module.exports = (robot) ->
 
   robot.respond /hostinger backup list ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
+    backups_list = ""
     hostinger_request 'POST', 'admin/backup/account/backups',
       {username: username},
       (result) ->
         if result.length
           for backup in result
-            msg.send "#{backup.type} backup #{backup.name} (#{backup.size}) on server #{backup.srv_id}: #{backup.date} - #{backup.url} (link is clickable one time only)"
+            backups_list = backups_list + "#{backup.type} backup #{backup.name} (#{backup.size}) on server #{backup.srv_id}: #{backup.date} - #{backup.url} (link is clickable one time only)\n"
+          msg.send backups_list
         else
           msg.send "no backups for #{username}"
 
