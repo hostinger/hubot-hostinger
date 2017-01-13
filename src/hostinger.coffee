@@ -119,7 +119,4 @@ module.exports = (robot) ->
     hostinger_request 'GET', 'admin/reseller/client/account/'+username+'/info',
       null,
       (result) ->
-        if result.length
-          msg.send "#{result}"
-        else
-          msg.send "Nothing"
+        msg.send result
