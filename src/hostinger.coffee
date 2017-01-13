@@ -55,9 +55,11 @@ module.exports = (robot) ->
     hostinger_request 'POST', 'admin/backup/account/backups',
       {username: username},
       (result) ->
+        msg.send "```"
         if result.length
           for backup in result
             msg.send "#{backup.type} backup #{backup.name} (#{backup.size}) on server #{backup.srv_id}: #{backup.date} - #{backup.url} (link is clickable one time only)"
+        msg.send "```"
         else
           msg.send "no backups for #{username}"
 
