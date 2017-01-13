@@ -119,4 +119,4 @@ module.exports = (robot) ->
     hostinger_request 'GET', 'admin/reseller/client/account/'+username+'/info',
       null,
       (result) ->
-        msg.send result
+        msg.send JSON.stringify(result, null, '\t')
