@@ -118,4 +118,7 @@ module.exports = (robot) ->
     username = msg.match[1]
     hostinger_request 'GET', 'admin/reseller/client/account/'+username+'/info',
       (result) ->
-        msg.send result
+        if result.length
+          msg.send "#{result}"
+        else
+          msg.send "Nothing"
