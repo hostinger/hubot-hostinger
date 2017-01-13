@@ -16,6 +16,7 @@
 #   hubot hostinger show null routed ips - display currently null routed ips
 #   hubot hostinger check <server_id> <ip> - check if ip <ip> blocked on <server_id>
 #   hubot hostinger unban <server_id> <ip> - unban ip <ip> blocked on <server_id>
+#   hubot hostinger account info <username> - Get account info for username
 #
 # Author:
 #   fordnox
@@ -112,3 +113,9 @@ module.exports = (robot) ->
           msg.send "#{result}"
         else
           msg.send "Nothing"
+
+  robot.respond /hostinger account info ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request 'GET', 'admin/reseller/client/account/'+username+'/info',
+      (result) ->
+        msg.send result
