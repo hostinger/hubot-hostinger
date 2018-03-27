@@ -59,7 +59,7 @@ module.exports = (robot) ->
       (result) ->
         if result.length
           for backup in result
-            msg.send "#{backup.type}: #{backup.date} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
+            msg.send "#{backup.type} (preparing: #{backup.preparing}) : #{backup.date} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
         else
           msg.send "no backups for #{username}"
 
