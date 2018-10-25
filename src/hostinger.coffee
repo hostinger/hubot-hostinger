@@ -10,7 +10,7 @@
 # Commands:
 #   hubot hostinger ping - test API is responding
 #   hubot hostinger backup list <username> - List backups for username.
-#   hubot hostinger backup prepare <username> - Prepare backups for username.
+#   hubot hostinger backup prepare <username> <backup_name> - Prepare backups for username.
 #   hubot hostinger backup create <username> - create backup for <username>
 #   hubot hostinger backup move <filename> - move backup to /home/<username>/public_html/<filename>
 #   hubot hostinger hosted <domain> - check if domain is already hosted
@@ -59,14 +59,15 @@ module.exports = (robot) ->
       (result) ->
         if result.length
           for backup in result
-            msg.send "#{backup.type} (preparing: #{backup.preparing}) : #{backup.date} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
+            msg.send "#{backup.type} (preparing: #{backup.preparing}) : #{backup.name} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
         else
           msg.send "no backups for #{username}"
 
-  robot.respond /hostinger backup prepare ([a-z0-9]+)/i, (msg) ->
-    username = msg.match[1]
+  robot.respond /hostinger backup prepare ([a-z0-9 _\.]+)/i, (msg) ->
+    username = msg.match[1].split(" ")[0]
+    backup_name = msg.match[1].split(" ")[1]
     hostinger_request 'POST', 'admin/backup/account/backup/prepare',
-      {username: username},
+      {username: username,backup_name: backup_name},
       (result) ->
         if result.length
           msg.send result
