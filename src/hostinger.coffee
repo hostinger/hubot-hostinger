@@ -74,10 +74,24 @@ module.exports = (robot) ->
         else
           msg.send "no backups for #{username}"
 
-  robot.respond /hostinger backup move ([a-z0-9_\.]+)/i, (msg) ->
-    filename = msg.match[1]
-    hostinger_request 'POST', 'admin/backup/account/backup/move',
-      {backup: filename},
+  robot.respond /hostinger backup mount ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request 'POST', 'admin/backup/account/backup/mount',
+      {username: username},
+      (result) ->
+        msg.send result
+
+  robot.respond /hostinger backup unmount ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request 'POST', 'admin/backup/account/backup/unmount',
+      {username: username},
+      (result) ->
+        msg.send result
+
+  robot.respond /hostinger backup mount status ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request 'POST', 'admin/backup/account/backup/mount_status',
+      {username: username},
       (result) ->
         msg.send result
 
