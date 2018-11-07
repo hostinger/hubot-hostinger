@@ -11,12 +11,14 @@
 #   hubot hostinger ping - test API is responding
 #   hubot hostinger backup list <username> - List backups for username.
 #   hubot hostinger backup prepare <username> <backup_name> - Prepare backups for username.
-#   hubot hostinger backup create <username> - create backup for <username>
-#   hubot hostinger backup move <filename> - move backup to /home/<username>/public_html/<filename>
-#   hubot hostinger hosted <domain> - check if domain is already hosted
-#   hubot hostinger show null routed ips - display currently null routed ips
-#   hubot hostinger check <server_id> <ip> - check if ip <ip> blocked on <server_id>
-#   hubot hostinger unban <server_id> <ip> - unban ip <ip> blocked on <server_id>
+#   hubot hostinger backup create <username> - Create backup for <username>
+#   hubot hostinger backup mount <username> - Mount backup dir in user home dir
+#   hubot hostinger backup unmount <username> - Unmount backup dir
+#   hubot hostinger backup mount-status <username> - Check if backup dir is mounted or not
+#   hubot hostinger hosted <domain> - Check if domain is already hosted
+#   hubot hostinger show null routed ips - Display currently null routed ips
+#   hubot hostinger check <server_id> <ip> - Check if ip <ip> blocked on <server_id>
+#   hubot hostinger unban <server_id> <ip> - Unban ip <ip> blocked on <server_id>
 #   hubot hostinger account info <username> - Get account info for username
 #
 # Author:
@@ -79,21 +81,30 @@ module.exports = (robot) ->
     hostinger_request 'POST', 'admin/backup/account/backup/mount',
       {username: username},
       (result) ->
-        msg.send result
+        if result == true
+          msg.send "Backup dir has been mounted"
+        else
+          msg.send "Backup dir is probably already mounted, please check"
 
   robot.respond /hostinger backup unmount ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
     hostinger_request 'POST', 'admin/backup/account/backup/unmount',
       {username: username},
       (result) ->
-        msg.send result
+        if result == true
+          msg.send "Backup dir has been unmounted"
+        else
+          msg.send "Backup dir is not mounted"
 
-  robot.respond /hostinger backup mount status ([a-z0-9]+)/i, (msg) ->
+  robot.respond /hostinger backup mount-status ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
     hostinger_request 'POST', 'admin/backup/account/backup/mount_status',
       {username: username},
       (result) ->
-        msg.send result
+        if result == true
+          msg.send "Backup dir is mounted"
+        else
+          msg.send "Backup dir is not mounted"
 
   robot.respond /hostinger backup create ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
