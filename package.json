@@ -1,7 +1,7 @@
 {
   "name": "hubot-hostinger",
   "description": "A Hubot script for Hostinger",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "index.coffee",
   "repository": {
     "type": "git",
