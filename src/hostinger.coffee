@@ -16,7 +16,6 @@
 #   hubot hostinger backup unmount <username> - Unmount backup dir
 #   hubot hostinger backup mount-status <username> - Check if backup dir is mounted or not
 #   hubot hostinger hosted <domain> - Check if domain is already hosted
-#   hubot hostinger show null routed ips - Display currently null routed ips
 #   hubot hostinger check <server_id> <ip> - Check if ip <ip> blocked on <server_id>
 #   hubot hostinger unban <server_id> <ip> - Unban ip <ip> blocked on <server_id>
 #   hubot hostinger account info <username> - Get account info for username
@@ -122,12 +121,6 @@ module.exports = (robot) ->
           msg.send "Domain #{result.domain} type #{result.type}: hosted: #{result.hosted}"
         else
           msg.send "Domain #{result.domain} is not hosted"
-
-  robot.respond /hostinger show null routed ips/i, (msg) ->
-    hostinger_request 'POST', 'admin/health/null_routed_ips',
-      null,
-      (result) ->
-        msg.send "Ips: #{result}"
 
   robot.respond /hostinger check ([0-9\. ]+)/i, (msg) ->
     server_id = msg.match[1].split(" ")[0]
