@@ -18,7 +18,6 @@
 #   hubot hostinger hosted <domain> - Check if domain is already hosted
 #   hubot hostinger check <server_id> <ip> - Check if ip <ip> blocked on <server_id>
 #   hubot hostinger unban <server_id> <ip> - Unban ip <ip> blocked on <server_id>
-#   hubot hostinger account info <username> - Get account info for username
 #
 # Author:
 #   fordnox
@@ -143,10 +142,3 @@ module.exports = (robot) ->
           msg.send "#{result}"
         else
           msg.send "Nothing"
-
-  robot.respond /hostinger account info ([a-z0-9]+)/i, (msg) ->
-    username = msg.match[1]
-    hostinger_request 'GET', 'admin/reseller/client/account/'+username+'/info',
-      null,
-      (result) ->
-        msg.send JSON.stringify(result, null, '\t')
