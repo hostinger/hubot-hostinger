@@ -33,7 +33,7 @@ hostinger_request = (method, url, params, handler) ->
 
 module.exports = (robot) ->
   robot.respond /downtime ([^|]*)\|([^|]*)\|(\d\w+)\|?([^|]*)/i, (msg) ->
-    server_fqdn = msg.match[1]
+    server_fqdn = msg.match[1].replace /^http:\/\//, ''
     message = msg.match[2]
     eta = msg.match[3]
     server_ip = msg.match[4]
@@ -41,6 +41,7 @@ module.exports = (robot) ->
       {server_fqdn: server_fqdn, server_ip: server_ip, message: message, eta:eta},
       (result) ->
         if result == true
+          robot.messageRoom '#downtime', "Incident: #{server_fqdn} | #{server_ip} | message: #{message} | eta: #{eta}"
           msg.send "Incident has been added"
         else
           msg.send "Incident has not been added: #{result}"
