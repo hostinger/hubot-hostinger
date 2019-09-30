@@ -23,8 +23,7 @@
 #   fordnox
 
 request = require('request')
-
-hostinger_request = (method, url, params, handler) ->
+hostinger_request = (msg, method, url, params, handler) ->
   hostinger_url = process.env.HUBOT_HOSTINGER_API_URL
 
   request {
@@ -41,9 +40,10 @@ hostinger_request = (method, url, params, handler) ->
       if content.error?
         if content.error?.message
           console.log "Hostinger says: #{content.error.message}"
+          msg.reply content.error.message
+          return
         else
           console.log "Hostinger says: #{content.error}"
-        return
       handler content.result
 
 module.exports = (robot) ->
@@ -54,19 +54,21 @@ module.exports = (robot) ->
 
   robot.respond /hostinger backup list ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
-    hostinger_request 'POST', 'admin/backup/account/backups',
+    hostinger_request msg, 'POST', 'admin/backup/account/backups',
       {username: username},
       (result) ->
         if result.length
-          for backup in result
-            msg.send "#{backup.type} (preparing: #{backup.preparing}) : #{backup.name} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
+           array = []
+           for backup in result
+             array.push "#{backup.type} (preparing: #{backup.preparing}) : #{backup.name} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
+           msg.send array.join("\n")
         else
           msg.send "no backups for #{username}"
 
   robot.respond /hostinger backup prepare ([a-z0-9 _\.]+)/i, (msg) ->
     username = msg.match[1].split(" ")[0]
     backup_name = msg.match[1].split(" ")[1]
-    hostinger_request 'POST', 'admin/backup/account/backup/prepare',
+    hostinger_request msg, 'POST', 'admin/backup/account/backup/prepare',
       {username: username,backup_name: backup_name},
       (result) ->
         if result.length
@@ -76,7 +78,7 @@ module.exports = (robot) ->
 
   robot.respond /hostinger backup mount ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
-    hostinger_request 'POST', 'admin/backup/account/backup/mount',
+    hostinger_request msg, 'POST', 'admin/backup/account/backup/mount',
       {username: username},
       (result) ->
         if result == true
@@ -86,7 +88,7 @@ module.exports = (robot) ->
 
   robot.respond /hostinger backup unmount ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
-    hostinger_request 'POST', 'admin/backup/account/backup/unmount',
+    hostinger_request msg, 'POST', 'admin/backup/account/backup/unmount',
       {username: username},
       (result) ->
         if result == true
@@ -96,7 +98,7 @@ module.exports = (robot) ->
 
   robot.respond /hostinger backup mount-status ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
-    hostinger_request 'POST', 'admin/backup/account/backup/mount_status',
+    hostinger_request msg, 'POST', 'admin/backup/account/backup/mount_status',
       {username: username},
       (result) ->
         if result == true
@@ -106,14 +108,14 @@ module.exports = (robot) ->
 
   robot.respond /hostinger backup create ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
-    hostinger_request 'POST', 'admin/backup/account/backup/create',
+    hostinger_request msg, 'POST', 'admin/backup/account/backup/create',
       {username: username},
       (result) ->
-        msg.send result
+        msg.send "#{result}"
 
   robot.respond /hostinger hosted ([\S]+)/i, (msg) ->
     domain = msg.match[1]
-    hostinger_request 'POST', 'admin/reseller/client/order/is_domain_hosted',
+    hostinger_request msg, 'POST', 'admin/reseller/client/order/is_domain_hosted',
       {domain: domain},
       (result) ->
         if result.hosted
@@ -124,7 +126,7 @@ module.exports = (robot) ->
   robot.respond /hostinger check ([0-9\. ]+)/i, (msg) ->
     server_id = msg.match[1].split(" ")[0]
     ip = msg.match[1].split(" ")[1]
-    hostinger_request 'POST', 'admin/server/ip/check',
+    hostinger_request msg, 'POST', 'admin/server/ip/check',
       {server_id: server_id,ip: ip},
       (result) ->
         if result.length
@@ -135,7 +137,7 @@ module.exports = (robot) ->
   robot.respond /hostinger unban ([0-9\. ]+)/i, (msg) ->
     server_id = msg.match[1].split(" ")[0]
     ip = msg.match[1].split(" ")[1]
-    hostinger_request 'POST', 'admin/server/ip/unban',
+    hostinger_request msg, 'POST', 'admin/server/ip/unban',
       {server_id: server_id,ip: ip},
       (result) ->
         if result.length
