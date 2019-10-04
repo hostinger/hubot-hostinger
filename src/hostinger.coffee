@@ -18,7 +18,8 @@
 #   hubot hostinger hosted <domain> - Check if domain is already hosted
 #   hubot hostinger check <server_id> <ip> - Check if ip <ip> blocked on <server_id>
 #   hubot hostinger unban <server_id> <ip> - Unban ip <ip> blocked on <server_id>
-#
+#   hubot hostinger boost <username> - Temporary increase account limits for faster archive extract and files copy
+#   hubot hostinger stopboost <username> - Reset account limits to default after using `boost` command
 # Author:
 #   fordnox
 
@@ -144,3 +145,23 @@ module.exports = (robot) ->
           msg.send "#{result}"
         else
           msg.send "Nothing"
+
+  robot.respond /hostinger boost ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request msg, 'POST', 'admin/account/high-io/set',
+      {username: username},
+      (result) ->
+        if result == true
+          msg.send "The account has been BOOSTED!"
+        else
+          msg.send "ERROR"
+
+  robot.respond /hostinger stopboost ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request msg, 'POST', 'admin/account/high-io/unset',
+      {username: username},
+      (result) ->
+        if result == true
+          msg.send "The Boost has been stopped"
+        else
+          msg.send "ERROR"
