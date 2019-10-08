@@ -37,14 +37,15 @@ module.exports = (robot) ->
     message = msg.match[2].replace /^\s+|\s+$/g, ''
     eta = msg.match[3].replace /^\s+|\s+$/g, ''
     server_ip = msg.match[4].replace /^\s+|\s+$/g, ''
+    user = msg.message.user.name
     hostinger_request 'POST', 'api/incident',
       {server_fqdn: server_fqdn, server_ip: server_ip, message: message, eta:eta},
       (result) ->
         if result == true
           if server_ip
-            robot.messageRoom '#downtime', "Incident: #{server_fqdn} | #{server_ip} | message: #{message} | eta: #{eta}"
+            robot.messageRoom '#downtime', "Incident: #{server_fqdn} | #{server_ip} | message: #{message} | eta: #{eta} | agent: @#{user}"
           else
-            robot.messageRoom '#downtime', "Incident: #{server_fqdn} | message: #{message} | eta: #{eta}"
+            robot.messageRoom '#downtime', "Incident: #{server_fqdn} | message: #{message} | eta: #{eta} | agent: @#{user}"
           msg.send "Incident has been added"
         else
           msg.send "Incident has not been added: #{result}"
