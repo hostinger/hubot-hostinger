@@ -20,6 +20,7 @@
 #   hubot hostinger unban <server_id> <ip> - Unban ip <ip> blocked on <server_id>
 #   hubot hostinger boost <username> - Temporary increase account limits for faster archive extract and files copy
 #   hubot hostinger stopboost <username> - Reset account limits to default after using `boost` command
+#   hubot hostinger moncli_check <username> - Check Hostinger account for any misconfigurations.
 # Author:
 #   fordnox
 
@@ -165,3 +166,13 @@ module.exports = (robot) ->
           msg.send "The Boost has been stopped"
         else
           msg.send "ERROR"
+
+  robot.respond /hostinger moncli_check ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request msg, 'POST', 'admin/account/moncli/check',
+      {username: username},
+      (result) ->
+        if result.length
+          msg.send "#{result}"
+        else
+          msg.send "Nothing"
