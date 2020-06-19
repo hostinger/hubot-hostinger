@@ -63,7 +63,16 @@ module.exports = (robot) ->
            array = []
            for backup in result
              array.push "#{backup.type} (preparing: #{backup.preparing}) : #{backup.name} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
-           msg.send array.join("\n")
+           if array.length > 250
+             filename = "backuplist.txt"
+             opts = {
+             content: array.join("\n")
+             title: 'Backup List'
+             channels: msg.message.room
+             }
+             robot.adapter.client.web.files.upload(filename, opts)
+           else
+             msg.send array.join("\n")
         else
           msg.send "no backups for #{username}"
 
