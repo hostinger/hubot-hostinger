@@ -15,6 +15,8 @@
 #   hubot hostinger backup mount <username> - Mount backup dir in user home dir
 #   hubot hostinger backup unmount <username> - Unmount backup dir
 #   hubot hostinger backup mount-status <username> - Check if backup dir is mounted or not
+#   hubot hostinger backup restoredb <username> <database_name> <archive_name> - Restore database backup
+#   hubot hostinger backup restorefiles <username> <archive_name> <wipe (default: true, OPTIONAL true or false)> <path (default: / , OPTIONAL)> - Restore files backup
 #   hubot hostinger hosted <domain> - Check if domain is already hosted
 #   hubot hostinger check <server_id> <ip> - Check if ip <ip> blocked on <server_id>
 #   hubot hostinger unban <server_id> <ip> - Unban ip <ip> blocked on <server_id>
@@ -62,7 +64,7 @@ module.exports = (robot) ->
         if result.length
            array = []
            for backup in result
-             array.push "#{backup.type} (preparing: #{backup.preparing}) : #{backup.name} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
+             array.push "archive_name: #{backup.archive} (preparing: #{backup.preparing}) backup_name: #{backup.name} (#{backup.size}) - #{backup.url} (link is clickable one time only)"
            if array.length > 250
              filename = "backuplist.txt"
              opts = {
@@ -123,6 +125,31 @@ module.exports = (robot) ->
       {username: username},
       (result) ->
         msg.send "#{result}"
+
+  robot.respond /hostinger backup restoredb ([a-z0-9 -_\.]+)/i, (msg) ->
+    username = msg.match[1].split(" ")[0]
+    db_name = msg.match[1].split(" ")[1]
+    archive = msg.match[1].split(" ")[2]
+    hostinger_request msg, 'POST', 'admin/account/restore/database',
+      {username: username,db_name: db_name,archive: archive},
+      (result) ->
+        if result == true
+          msg.send "Restored"
+        else
+          msg.send result
+
+  robot.respond /hostinger backup restorefiles ([a-z0-9 -_\.]+)/i, (msg) ->
+    username = msg.match[1].split(" ")[0]
+    archive = msg.match[1].split(" ")[1]
+    wipe = msg.match[1].split(" ")[2]
+    path = msg.match[1].split(" ")[3]
+    hostinger_request msg, 'POST', 'admin/account/restore/files',
+      {username: username,archive: archive,wipe: wipe,path: path},
+      (result) ->
+        if result == true
+          msg.send "Restored"
+        else
+          msg.send result
 
   robot.respond /hostinger hosted ([\S]+)/i, (msg) ->
     domain = msg.match[1]
