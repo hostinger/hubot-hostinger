@@ -16,7 +16,7 @@
 #   hubot hostinger backup unmount <username> - Unmount backup dir
 #   hubot hostinger backup mount-status <username> - Check if backup dir is mounted or not
 #   hubot hostinger backup restoredb <username> <database_name> <archive_name> - Restore database backup
-#   hubot hostinger backup restorefiles <username> <archive_name> <wipe (default: true, OPTIONAL true or false)> <path (default: / , OPTIONAL)> - Restore files backup
+#   hubot hostinger backup restorefiles <username> <archive_name> <wipe (default: 1, 1(true) or 0(false) , OPTIONAL)> <path (default: / , OPTIONAL)> - Restore files backup
 #   hubot hostinger hosted <domain> - Check if domain is already hosted
 #   hubot hostinger check <server_id> <ip> - Check if ip <ip> blocked on <server_id>
 #   hubot hostinger unban <server_id> <ip> - Unban ip <ip> blocked on <server_id>
