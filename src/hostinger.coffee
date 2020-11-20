@@ -23,6 +23,8 @@
 #   hubot hostinger boost <username> - Temporary increase account limits for faster archive extract and files copy
 #   hubot hostinger stopboost <username> - Reset account limits to default after using `boost` command
 #   hubot hostinger moncli_check <username> - Check Hostinger account for any misconfigurations.
+#   hubot hostinger storage_boost <username> - Temporary increase account storage limits and limits for faster archive extract and files copy
+#   hubot hostinger stop_storage_boost <username> - Reset account limits to default after using `storage_boost` command
 # Author:
 #   fordnox
 
@@ -212,3 +214,23 @@ module.exports = (robot) ->
           msg.send "#{result}"
         else
           msg.send "Nothing"
+
+  robot.respond /hostinger storage_boost ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request msg, 'POST', 'admin/account/storage-boost/set',
+      {username: username},
+      (result) ->
+        if result == true
+          msg.send "The account has been BOOSTED!"
+        else
+          msg.send "ERROR"
+
+  robot.respond /hostinger stop_storage_boost ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request msg, 'POST', 'admin/account/storage-boost/unset',
+      {username: username},
+      (result) ->
+        if result == true
+          msg.send "The Boost has been stopped"
+        else
+          msg.send "ERROR"
