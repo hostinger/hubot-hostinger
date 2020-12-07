@@ -23,6 +23,7 @@
 #   hubot hostinger boost <username> - Temporary increase account limits for faster archive extract and files copy
 #   hubot hostinger stopboost <username> - Reset account limits to default after using `boost` command
 #   hubot hostinger moncli_check <username> - Check Hostinger account for any misconfigurations.
+#   hubot hostinger diag <username> - Diagnose Hostinger account and it's related domains for any misconfigurations.
 #   hubot hostinger storage_boost <username> - Temporary increase account storage limits and limits for faster archive extract and files copy
 #   hubot hostinger stop_storage_boost <username> - Reset account limits to default after using `storage_boost` command
 # Author:
@@ -208,6 +209,16 @@ module.exports = (robot) ->
   robot.respond /hostinger moncli_check ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
     hostinger_request msg, 'POST', 'admin/account/moncli/check',
+      {username: username},
+      (result) ->
+        if result.length
+          msg.send "#{result}"
+        else
+          msg.send "Nothing"
+
+  robot.respond /hostinger diag ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1]
+    hostinger_request msg, 'POST', 'admin/account/diag/check',
       {username: username},
       (result) ->
         if result.length
