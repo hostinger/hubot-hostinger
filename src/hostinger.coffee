@@ -221,10 +221,10 @@ module.exports = (robot) ->
     hostinger_request msg, 'POST', 'admin/account/diag/check',
       {username: username},
       (result) ->
-        if result.length
+        if result.length < 11500
           msg.send "#{result}"
         else
-          msg.send "Nothing"
+          msg.send "Message length is too large: #{result.length}"
 
   robot.respond /hostinger storage_boost ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
