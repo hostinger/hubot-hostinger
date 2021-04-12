@@ -24,6 +24,7 @@
 #   hubot hostinger stopboost <username> - Reset account limits to default after using `boost` command
 #   hubot hostinger moncli_check <username> - Check Hostinger account for any misconfigurations.
 #   hubot hostinger diag <username> - Diagnose Hostinger account and it's related domains for any misconfigurations.
+#   hubot hostinger lve <username> <day_period (default: 1, range 1-10, OPTIONAL)> - Print out LVE limit hit in the past day period. Default is 1 hour.
 #   hubot hostinger storage_boost <username> - Temporary increase account storage limits and limits for faster archive extract and files copy
 #   hubot hostinger stop_storage_boost <username> - Reset account limits to default after using `storage_boost` command
 # Author:
@@ -225,6 +226,17 @@ module.exports = (robot) ->
           msg.send "#{result}"
         else
           msg.send "Nothing"
+
+  robot.respond /hostinger lve ([a-z0-9]+)/i, (msg) ->
+    username = msg.match[1].split(" ")[0]
+    day_period = msg.match[1].split(" ")[1]
+    hostinger_request msg, 'POST', 'admin/account/lve/snapshot',
+      {username: username, day_period: day_period},
+      (result) ->
+        if result.length
+          msg.send "#{result}"
+        else
+          msg.send "ERROR"
 
   robot.respond /hostinger storage_boost ([a-z0-9]+)/i, (msg) ->
     username = msg.match[1]
