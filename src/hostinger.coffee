@@ -227,11 +227,11 @@ module.exports = (robot) ->
         else
           msg.send "Nothing"
 
-  robot.respond /hostinger lve ([a-z0-9]+)/i, (msg) ->
+  robot.respond /hostinger lve ([a-z0-9\. ]+)/i, (msg) ->
     username = msg.match[1].split(" ")[0]
     day_period = msg.match[1].split(" ")[1]
     hostinger_request msg, 'POST', 'admin/account/lve/snapshot',
-      {username: username, day_period: day_period},
+      {username: username,day_period: day_period},
       (result) ->
         if result.length
           msg.send "#{result}"
